@@ -2,6 +2,7 @@ import { Player } from "../objects/player";
 import { Enemy } from "../objects/enemy";
 import { Obstacle } from "../objects/obstacles/obstacle";
 import { Bullet } from "../objects/bullet";
+import { Pause } from "../objects/Pause";
 
 export class GameScene extends Phaser.Scene {
   private map: Phaser.Tilemaps.Tilemap;
@@ -11,7 +12,7 @@ export class GameScene extends Phaser.Scene {
   private player: Player;
   private enemies: Phaser.GameObjects.Group;
   private obstacles: Phaser.GameObjects.Group;
-
+  private pause: Pause;
   private target: Phaser.Math.Vector2;
 
   constructor() {
@@ -24,6 +25,8 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this.tweenOpening();
+    this.createPauseUi();
+
     // create tilemap from tiled JSON
     this.map = this.make.tilemap({ key: "levelMap" });
 
@@ -90,8 +93,51 @@ export class GameScene extends Phaser.Scene {
         null,
       );
     }, this);
-
+    // this.createPauseScreen();
     this.cameras.main.startFollow(this.player);
+  }
+  createPauseUi(): void {
+    this.pause = new Pause({
+      scene: this,
+      x: 60,
+      y: 60,
+      texture: "pause",
+    }).setDepth(2);
+  }
+  createPauseScreen(): void {
+    let veil = this.add.graphics({ x: 0, y: 0 });
+    veil.fillStyle(0, 0.3);
+    veil.fillRect(
+      0,
+      0,
+      this.sys.game.canvas.width,
+      this.sys.game.canvas.height,
+    );
+    veil.setDepth(5).setScrollFactor(0);
+
+    let bgPopup = this.add
+      .image(0, 0, "bgPausePopup")
+      .setDepth(5)
+      .setScrollFactor(0);
+    let newGame = this.add
+      .image(0, 0, "newGameBtn")
+      .setDepth(6)
+      .setScrollFactor(0);
+    let resume = this.add
+      .image(0, 0, "resumeBtn")
+      .setDepth(6)
+      .setScrollFactor(0);
+    Phaser.Display.Align.In.TopLeft(
+      bgPopup,
+      this.add.zone(
+        this.sys.game.canvas.width / 2 - 350,
+        this.sys.game.canvas.height / 2 - 350,
+        0,
+        0,
+      ),
+    );
+    Phaser.Display.Align.In.Center(newGame, bgPopup);
+    Phaser.Display.Align.In.TopCenter(resume, bgPopup);
   }
   tweenOpening(): void {
     let blocks = this.add.group();

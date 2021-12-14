@@ -1,5 +1,5 @@
-import { Bullet } from './bullet';
-import { IImageConstructor } from '../interfaces/image.interface';
+import { Bullet } from "./bullet";
+import { IImageConstructor } from "../interfaces/image.interface";
 
 export class Player extends Phaser.GameObjects.Image {
   body: Phaser.Physics.Arcade.Body;
@@ -16,6 +16,8 @@ export class Player extends Phaser.GameObjects.Image {
   // game objects
   private bullets: Phaser.GameObjects.Group;
 
+  private shootSound: Phaser.Sound.BaseSound;
+
   // input
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private rotateKeyLeft: Phaser.Input.Keyboard.Key;
@@ -30,7 +32,11 @@ export class Player extends Phaser.GameObjects.Image {
     super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame);
 
     this.initImage();
+    this.initSound();
     this.scene.add.existing(this);
+  }
+  private initSound(): void {
+    this.shootSound = this.scene.sound.add("shootSound", { volume: 0.2 });
   }
 
   private initImage() {
@@ -44,7 +50,7 @@ export class Player extends Phaser.GameObjects.Image {
     this.setDepth(0);
     this.angle = 180;
 
-    this.barrel = this.scene.add.image(this.x, this.y, 'barrelBlue');
+    this.barrel = this.scene.add.image(this.x, this.y, "barrelBlue");
     this.barrel.setOrigin(0.5, 1);
     this.barrel.setDepth(1);
     this.barrel.angle = 180;
@@ -57,19 +63,19 @@ export class Player extends Phaser.GameObjects.Image {
       /*classType: Bullet,*/
       active: true,
       maxSize: 10,
-      runChildUpdate: true
+      runChildUpdate: true,
     });
 
     // input
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.rotateKeyLeft = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.A
+      Phaser.Input.Keyboard.KeyCodes.A,
     );
     this.rotateKeyRight = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.D
+      Phaser.Input.Keyboard.KeyCodes.D,
     );
     this.shootingKey = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
+      Phaser.Input.Keyboard.KeyCodes.SPACE,
     );
 
     // physics
@@ -98,13 +104,13 @@ export class Player extends Phaser.GameObjects.Image {
       this.scene.physics.velocityFromRotation(
         this.rotation - Math.PI / 2,
         this.speed,
-        this.body.velocity
+        this.body.velocity,
       );
     } else if (this.cursors.down.isDown) {
       this.scene.physics.velocityFromRotation(
         this.rotation - Math.PI / 2,
         -this.speed,
-        this.body.velocity
+        this.body.velocity,
       );
     } else {
       this.body.setVelocity(0, 0);
@@ -127,19 +133,20 @@ export class Player extends Phaser.GameObjects.Image {
 
   private handleShooting(): void {
     if (this.shootingKey.isDown && this.scene.time.now > this.lastShoot) {
+      this.shootSound.play();
       this.scene.cameras.main.shake(20, 0.005);
       this.scene.tweens.add({
         targets: this,
         props: { alpha: 0.8 },
         delay: 0,
         duration: 5,
-        ease: 'Power1',
+        ease: "Power1",
         easeParams: null,
         hold: 0,
         repeat: 0,
         repeatDelay: 0,
         yoyo: true,
-        paused: false
+        paused: false,
       });
 
       if (this.bullets.getLength() < 10) {
@@ -149,8 +156,8 @@ export class Player extends Phaser.GameObjects.Image {
             rotation: this.barrel.rotation,
             x: this.barrel.x,
             y: this.barrel.y,
-            texture: 'bulletBlue'
-          })
+            texture: "bulletBlue",
+          }),
         );
 
         this.lastShoot = this.scene.time.now + 80;
@@ -165,7 +172,7 @@ export class Player extends Phaser.GameObjects.Image {
       -this.width / 2,
       this.height / 2,
       this.width * this.health,
-      15
+      15,
     );
     this.lifeBar.lineStyle(2, 0xffffff);
     this.lifeBar.strokeRect(-this.width / 2, this.height / 2, this.width, 15);
@@ -179,7 +186,7 @@ export class Player extends Phaser.GameObjects.Image {
     } else {
       this.health = 0;
       this.active = false;
-      this.scene.scene.start('MenuScene');
+      this.scene.scene.start("MenuScene");
     }
   }
 }
