@@ -86,7 +86,38 @@
         "type": "image",
         "key": "treeLarge",
         "url": "./assets/obstacles/tree-large.png"
+      },
+      {
+        "type": "audio",
+        "key": "shootSound",
+        "url": "./assets/sound/shoot.mp3"
+      },
+      {
+        "type": "audio",
+        "key": "hitSound",
+        "url": "./assets/sound/hit.wav"
+      },
+            {
+        "type": "image",
+        "key": "pause",
+        "url": "./assets/images/pause_1.png"
+      },
+            {
+        "type": "image",
+        "key": "bgPausePopup",
+        "url": "./assets/images/background_popup.png"
+      },
+            {
+        "type": "image",
+        "key": "newGameBtn",
+        "url": "./assets/images/newGameBtn.png"
+      },
+            {
+        "type": "image",
+        "key": "resumeBtn",
+        "url": "./assets/images/resumeBtn.png"
       }
+
     ]
   }
 }
