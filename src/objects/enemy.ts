@@ -122,7 +122,7 @@ export class Enemy extends Phaser.GameObjects.Image {
   }
 
   public updateHealth(): void {
-    this.gotHitSound.play();
+    if (this.scene.registry.get("volume")) this.gotHitSound.play();
     if (this.health > 0) {
       this.health -= 0.05;
       this.redrawLifebar();

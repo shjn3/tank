@@ -105,17 +105,26 @@
             {
         "type": "image",
         "key": "bgPausePopup",
-        "url": "./assets/images/background_popup.png"
+        "url": "./assets/images/popup.png"
       },
-            {
+      {
         "type": "image",
-        "key": "newGameBtn",
+        "key": "newGameButton",
         "url": "./assets/images/newGameBtn.png"
       },
-            {
+      {
         "type": "image",
-        "key": "resumeBtn",
+        "key": "resumeButton",
         "url": "./assets/images/resumeBtn.png"
+      },
+        {
+        "type": "spritesheet",
+        "key": "volumeButton",
+        "url": "./assets/sprites/music.png",
+        "frameConfig": {
+          "frameWidth": 288,
+          "frameHeight": 88
+        }
       }
 
     ]

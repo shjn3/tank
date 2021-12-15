@@ -14,6 +14,8 @@ export class GameScene extends Phaser.Scene {
   private obstacles: Phaser.GameObjects.Group;
   private pause: Pause;
   private target: Phaser.Math.Vector2;
+  private scoreNumberText: Phaser.GameObjects.Text;
+  private scoreTextContaier: Phaser.GameObjects.Container;
 
   constructor() {
     super({
@@ -93,51 +95,32 @@ export class GameScene extends Phaser.Scene {
         null,
       );
     }, this);
-    // this.createPauseScreen();
+    this.createScore();
     this.cameras.main.startFollow(this.player);
   }
   createPauseUi(): void {
     this.pause = new Pause({
       scene: this,
-      x: 60,
+      x: this.sys.canvas.width - 60,
       y: 60,
       texture: "pause",
     }).setDepth(2);
   }
-  createPauseScreen(): void {
-    let veil = this.add.graphics({ x: 0, y: 0 });
-    veil.fillStyle(0, 0.3);
-    veil.fillRect(
-      0,
-      0,
-      this.sys.game.canvas.width,
-      this.sys.game.canvas.height,
-    );
-    veil.setDepth(5).setScrollFactor(0);
-
-    let bgPopup = this.add
-      .image(0, 0, "bgPausePopup")
-      .setDepth(5)
+  createScore(): void {
+    let scoreText = this.add
+      .bitmapText(10, 10, "font", "SCORE:", 50)
+      .setDepth(2)
       .setScrollFactor(0);
-    let newGame = this.add
-      .image(0, 0, "newGameBtn")
-      .setDepth(6)
+    this.scoreNumberText = this.add
+      .text(200, 10, this.registry.get("score"), {
+        color: "white",
+        fontSize: "55px",
+      })
       .setScrollFactor(0);
-    let resume = this.add
-      .image(0, 0, "resumeBtn")
-      .setDepth(6)
-      .setScrollFactor(0);
-    Phaser.Display.Align.In.TopLeft(
-      bgPopup,
-      this.add.zone(
-        this.sys.game.canvas.width / 2 - 350,
-        this.sys.game.canvas.height / 2 - 350,
-        0,
-        0,
-      ),
-    );
-    Phaser.Display.Align.In.Center(newGame, bgPopup);
-    Phaser.Display.Align.In.TopCenter(resume, bgPopup);
+    this.scoreTextContaier = this.add.container(10, 10, [
+      scoreText,
+      this.scoreNumberText,
+    ]);
   }
   tweenOpening(): void {
     let blocks = this.add.group();
@@ -192,6 +175,12 @@ export class GameScene extends Phaser.Scene {
       }
     }, this);
   }
+  private updateTextScore(): void {
+    let score: number = parseInt(this.registry.get("score"));
+    score++;
+    this.scoreNumberText.setText(`${score}`);
+    this.registry.set("score", score);
+  }
 
   private convertObjects(): void {
     // find the object layer in the tilemap named 'objects'
@@ -241,6 +230,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private playerBulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
+    this.updateTextScore();
     bullet.destroyBullet();
     enemy.updateHealth();
   }

@@ -4,13 +4,13 @@ export class MenuScene extends Phaser.Scene {
 
   constructor() {
     super({
-      key: 'MenuScene'
+      key: "MenuScene",
     });
   }
 
   init(): void {
     this.startKey = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.S
+      Phaser.Input.Keyboard.KeyCodes.S,
     );
     this.startKey.isDown = false;
   }
@@ -20,26 +20,32 @@ export class MenuScene extends Phaser.Scene {
       this.add.bitmapText(
         this.sys.canvas.width / 2 - 120,
         this.sys.canvas.height / 2,
-        'font',
-        'PRESS S TO PLAY',
-        30
-      )
+        "font",
+        "PRESS S TO PLAY",
+        30,
+      ),
     );
 
     this.bitmapTexts.push(
       this.add.bitmapText(
         this.sys.canvas.width / 2 - 120,
         this.sys.canvas.height / 2 - 100,
-        'font',
-        'TANK',
-        100
-      )
+        "font",
+        "TANK",
+        100,
+      ),
     );
+    this.initGlobalDataManager();
   }
 
   update(): void {
     if (this.startKey.isDown) {
-      this.scene.start('GameScene');
+      this.scene.start("GameScene");
+      // this.scene.start("GameOverScene");
     }
+  }
+  private initGlobalDataManager(): void {
+    this.registry.set("volume", true);
+    this.registry.set("score", 0);
   }
 }

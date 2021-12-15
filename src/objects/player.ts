@@ -36,7 +36,7 @@ export class Player extends Phaser.GameObjects.Image {
     this.scene.add.existing(this);
   }
   private initSound(): void {
-    this.shootSound = this.scene.sound.add("shootSound", { volume: 0.2 });
+    this.shootSound = this.scene.sound.add("shootSound", { volume: 0.5 });
   }
 
   private initImage() {
@@ -133,7 +133,7 @@ export class Player extends Phaser.GameObjects.Image {
 
   private handleShooting(): void {
     if (this.shootingKey.isDown && this.scene.time.now > this.lastShoot) {
-      this.shootSound.play();
+      if (this.scene.registry.get("volume")) this.shootSound.play();
       this.scene.cameras.main.shake(20, 0.005);
       this.scene.tweens.add({
         targets: this,
@@ -186,7 +186,14 @@ export class Player extends Phaser.GameObjects.Image {
     } else {
       this.health = 0;
       this.active = false;
-      this.scene.scene.start("MenuScene");
+      let highScore =
+        localStorage.getItem("highScore") === null
+          ? 0
+          : parseInt(localStorage.getItem("highScore"));
+      highScore = Math.max(highScore, this.scene.registry.get("score"));
+      localStorage.setItem("highScore", `${highScore}`);
+      this.scene.scene.pause();
+      this.scene.scene.launch("GameOverScene");
     }
   }
 }
